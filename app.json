@@ -1,7 +1,14 @@
 {
   "expo": {
     "name": "ryglfg-app",
+    "description": "An app for ryglfg",
     "slug": "ryglfg-app",
+    "privacy": "public",
+    "githubUrl": "https://github.com/RYGhub/ryglfg-app",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0d193b",
+    "primaryColor": "#0d193b",
+    "scheme": "ryglfg",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,7 +30,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": ["android.permission.INTERNET", "android.permission.ACCESS_NETWORK_STATE"]
     },
     "web": {
       "favicon": "./assets/favicon.png"

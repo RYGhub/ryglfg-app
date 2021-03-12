@@ -1,120 +1,51 @@
-import React from 'react';
-import { StyleSheet, ScrollView, StatusBar, Text } from 'react-native';
+import React, {Fragment, useState} from 'react'
+import { StyleSheet, ScrollView, StatusBar, Text, Button } from 'react-native';
 import MenuAnnouncement from "./components/MenuAnnouncement"
+import AuthButton from "./components/auth/AuthButton"
+import ContextAuth from "./contexts/ContextAuth"
+import Sub from "./components/Sub"
+import AnnouncementList from "./components/AnnouncementList"
 
 
 export default function App() {
+    const authDataState = useState(null);
+    const [authData, setAuthData] = authDataState;
+
     StatusBar.setBarStyle("light-content", true)
 
+    let contents;
+    if(!authData) {
+        contents = (
+            <Fragment>
+                <Text style={styles.title}>
+                    Login richiesto
+                </Text>
+                <AuthButton/>
+            </Fragment>
+        )
+    }
+    else {
+        console.log(authData)
+
+        contents = (
+            <Fragment>
+                <Text style={styles.logged_in}>
+                    <Sub id={authData["payload"]["sub"]}/>
+                </Text>
+                <AnnouncementList/>
+            </Fragment>
+        )
+    }
+
     return (
-        <ScrollView style={styles.container}>
+        <Fragment>
             <StatusBar backgroundColor={"#0d193b"}/>
-            <Text style={styles.title}>
-                RYGlfg
-            </Text>
-            <MenuAnnouncement data={
-                {
-                    "title": "Dotino veloce",
-                    "description": "Un dotino veloce, così, tanto per",
-                    "opening_time": "2021-03-10T19:00:00.000Z",
-                    "autostart_time": "2021-03-10T20:00:00.000Z",
-                    "aid": 0,
-                    "creator_id": "Steffo",
-                    "creation_time": "2021-03-10T18:23:35.847Z",
-                    "editing_time": "2021-03-10T18:23:35.847Z",
-                    "closer_id": "string",
-                    "closure_time": "2021-03-10T18:23:35.847Z",
-                    "state": -1,
-                    "responses": []
-                }
-            }/>
-            <MenuAnnouncement data={
-                {
-                    "title": "Dotino lentissimo",
-                    "description": "Un dota al rallentatore, per cambiare un po'",
-                    "opening_time": "2021-03-10T19:00:00.000Z",
-                    "autostart_time": "2021-03-10T20:00:00.000Z",
-                    "aid": 0,
-                    "creator_id": "Steffo",
-                    "creation_time": "2021-03-10T18:23:35.847Z",
-                    "editing_time": "2021-03-10T18:23:35.847Z",
-                    "closer_id": "string",
-                    "closure_time": "2021-03-10T18:23:35.847Z",
-                    "state": 0,
-                    "responses": [
-                        {
-                            "choice": "accepted",
-                            "aid": 0,
-                            "partecipant_id": "asdf",
-                            "posting_time": "2021-03-10T18:23:35.847Z",
-                            "editing_time": "2021-03-10T18:23:35.847Z"
-                        },
-                        {
-                            "choice": "accepted",
-                            "aid": 1,
-                            "partecipant_id": "awefa",
-                            "posting_time": "2021-03-10T18:23:35.847Z",
-                            "editing_time": "2021-03-10T18:23:35.847Z"
-                        },
-                        {
-                            "choice": "rejected",
-                            "aid": 2,
-                            "partecipant_id": "asdfef",
-                            "posting_time": "2021-03-10T18:23:35.847Z",
-                            "editing_time": "2021-03-10T18:23:35.847Z"
-                        },
-                    ]
-                }
-            }/>
-            <MenuAnnouncement data={
-                {
-                    "title": "Dotone grosso",
-                    "description": "Ogre Magi ha castato Bloodlust su una torre",
-                    "opening_time": "2021-03-10T19:00:00.000Z",
-                    "autostart_time": "2021-03-10T20:00:00.000Z",
-                    "aid": 0,
-                    "creator_id": "YourMother",
-                    "creation_time": "2021-03-10T18:23:35.847Z",
-                    "editing_time": "2021-03-10T18:23:35.847Z",
-                    "closer_id": "string",
-                    "closure_time": "2021-03-10T18:23:35.847Z",
-                    "state": 1,
-                    "responses": [
-                        {
-                            "choice": "accepted",
-                            "aid": 0,
-                            "partecipant_id": "string",
-                            "posting_time": "2021-03-10T18:23:35.847Z",
-                            "editing_time": "2021-03-10T18:23:35.847Z"
-                        }
-                    ]
-                }
-            }/>
-            <MenuAnnouncement data={
-                {
-                    "title": "Dotino noioso",
-                    "description": "Ops, non volevo fare un dotino così",
-                    "opening_time": "2021-03-10T19:00:00.000Z",
-                    "autostart_time": "2021-03-10T20:00:00.000Z",
-                    "aid": 0,
-                    "creator_id": "Steffo",
-                    "creation_time": "2021-03-10T18:23:35.847Z",
-                    "editing_time": "2021-03-10T18:23:35.847Z",
-                    "closer_id": "string",
-                    "closure_time": "2021-03-10T18:23:35.847Z",
-                    "state": 2,
-                    "responses": [
-                        {
-                            "choice": "rejected",
-                            "aid": 0,
-                            "partecipant_id": "string",
-                            "posting_time": "2021-03-10T18:23:35.847Z",
-                            "editing_time": "2021-03-10T18:23:35.847Z"
-                        }
-                    ]
-                }
-            }/>
-        </ScrollView>
+            <ContextAuth.Provider value={authDataState}>
+                <ScrollView style={styles.container}>
+                    {contents}
+                </ScrollView>
+            </ContextAuth.Provider>
+        </Fragment>
     );
 }
 
@@ -128,5 +59,11 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 24,
         textAlign: "center",
+        marginBottom: 8,
+    },
+    logged_in: {
+        color: "#fff",
+        textAlign: "center",
+        marginBottom: 8,
     }
 });
