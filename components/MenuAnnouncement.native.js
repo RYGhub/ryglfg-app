@@ -18,7 +18,7 @@ export default function MenuAnnouncement({style, data}) {
                         {
                             Math.abs(autostartTime - todayTime) < 86400000 ?
                                 `${autostartTime.getHours().toString().padStart(2, "0")}:${autostartTime.getMinutes().toString().padStart(2, "0")}` :
-                                `${autostartTime.getFullYear()}-${autostartTime.getMonth().toString().padStart(2, "0")}-${autostartTime.getDate().toString().padStart(2, "0")}`
+                                `${autostartTime.getFullYear()}-${(autostartTime.getMonth()+1).toString().padStart(2, "0")}-${autostartTime.getDate().toString().padStart(2, "0")}`
                         }
                     </TextC>
                     <TextC style={styles.title}>
