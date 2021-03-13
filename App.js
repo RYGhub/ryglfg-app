@@ -1,17 +1,28 @@
 import React, {Fragment, useState} from 'react'
-import { StyleSheet, ScrollView, StatusBar, Text, Button } from 'react-native';
+import { StyleSheet, StatusBar, Text, View, BackHandler } from 'react-native';
 import MenuAnnouncement from "./components/MenuAnnouncement"
 import AuthButton from "./components/auth/AuthButton"
 import ContextAuth from "./contexts/ContextAuth"
 import Sub from "./components/Sub"
 import AnnouncementList from "./components/AnnouncementList"
+import ContextDetails from "./contexts/ContextDetails"
+import DetailsAnnouncement from "./components/DetailsAnnouncement"
 
 
 export default function App() {
     const authDataState = useState(null);
     const [authData, setAuthData] = authDataState;
+    const detailsState = useState(null);
+    const [details, setDetails] = detailsState;
 
     StatusBar.setBarStyle("light-content", true)
+    BackHandler.addEventListener("hardwareBackPress", event => {
+        if(details !== null) {
+            setDetails(null)
+            return true;
+        }
+        return false;
+    })
 
     let contents;
     if(!authData) {
@@ -24,9 +35,7 @@ export default function App() {
             </Fragment>
         )
     }
-    else {
-        console.log(authData)
-
+    else if(details === null) {
         contents = (
             <Fragment>
                 <Text style={styles.logged_in}>
@@ -36,15 +45,32 @@ export default function App() {
             </Fragment>
         )
     }
+    else {
+        contents = (
+            <Fragment>
+                <Text style={styles.logged_in}>
+                    <Sub id={authData["payload"]["sub"]}/>
+                </Text>
+                <DetailsAnnouncement data={details}/>
+            </Fragment>
+        )
+    }
 
     return (
         <Fragment>
+
             <StatusBar backgroundColor={"#0d193b"}/>
+
             <ContextAuth.Provider value={authDataState}>
-                <ScrollView style={styles.container}>
+            <ContextDetails.Provider value={detailsState}>
+
+                <View style={styles.container}>
                     {contents}
-                </ScrollView>
+                </View>
+
+            </ContextDetails.Provider>
             </ContextAuth.Provider>
+
         </Fragment>
     );
 }

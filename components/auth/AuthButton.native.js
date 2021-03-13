@@ -12,7 +12,6 @@ export default function AuthButton({}) {
 
     const [request, response, promptAsync] = useAuthRequest({
             clientId: "DFxyF0VoTJBnzZoFl3CD9JUvk7CH6kmq",
-            clientSecret: "S7gAZ_ex3VQrKbhnNKD9r6st53Volxvd-A3zyKBhWpe19uvrRiffsVdkG_XtNNVk",
             scopes: [
                 "openid",
                 "profile",
@@ -63,5 +62,9 @@ export default function AuthButton({}) {
 }
 
 const styles = StyleSheet.create({
-    view: {}
+    view: {},
+    button: {
+        color: "#000",
+        backgroundColor: "#00caca"
+    }
 })

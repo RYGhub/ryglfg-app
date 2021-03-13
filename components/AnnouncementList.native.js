@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react"
+import React, {Fragment, useContext, useEffect, useState} from "react"
 import {StyleSheet, View, RefreshControl, ScrollView} from 'react-native'
 import ContextAuth from "../contexts/ContextAuth"
 import {Text} from "react-native-web"
@@ -6,8 +6,8 @@ import TextC from "./TextC"
 import MenuAnnouncement from "./MenuAnnouncement"
 
 
-export default function AnnouncementList({style}) {
-    const [authData, _] = useContext(ContextAuth);
+export default function AnnouncementList({}) {
+    const [authData,] = useContext(ContextAuth);
     const [isRefreshing, setRefreshing] = useState(false);
     const [error, setError] = useState(null);
     const [data, setData] = useState(null);
@@ -16,9 +16,8 @@ export default function AnnouncementList({style}) {
         console.debug("[AnnouncementList] Starting refresh...")
         setRefreshing(true)
         setError(null)
-        console.log(`${authData["tokenType"]} ${authData["accessToken"]}`)
         try {
-            const req = await fetch("https://lfg.ryg.one/lfg", {
+            const req = await fetch(`https://lfg.ryg.one/lfg`, {
                 method: "GET",
                 cache: "no-cache",
                 headers: {
@@ -49,7 +48,7 @@ export default function AnnouncementList({style}) {
         contents = <TextC>⚠️ {error.toString()}</TextC>
     }
     if(data !== null) {
-        if(data.length == 0) {
+        if(data.length === 0) {
             contents = <TextC>Non c'è nulla qui...</TextC>
         }
         else {
@@ -58,13 +57,22 @@ export default function AnnouncementList({style}) {
     }
 
     return (
-        <ScrollView style={[styles.view, style]}>
-            <RefreshControl refreshing={isRefreshing} onRefresh={() => refresh}/>
+        <ScrollView
+            style={styles.view}
+            refreshControl={
+                <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={refresh}
+                    colors={["#9EC9FD"]}
+                    progressBackgroundColor={"#1E2F53"}
+                />
+            }
+        >
             {contents}
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
-    view: {}
+    view: {},
 })
