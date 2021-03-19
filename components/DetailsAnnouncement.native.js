@@ -1,12 +1,14 @@
 import React, {useContext, useEffect, useState} from "react"
-import {StyleSheet, View, RefreshControl, ScrollView} from 'react-native'
+import {StyleSheet, View, RefreshControl, ScrollView, FlatList} from 'react-native'
 import Box from "./Box"
 import TextC from "./TextC"
 import ContextColor from "../contexts/ContextColor"
-import renderDate from "../utils/renderDate"
+import renderAutoDatetime, {renderDate, renderFullDate, renderTime} from "../utils/renderAutoDatetime"
 import ContextDetails from "../contexts/ContextDetails"
 import ContextAuth from "../contexts/ContextAuth"
 import {colors} from "../utils/stateInfo"
+import dayStrings from "../utils/dayStrings"
+import Response from "./Response"
 
 
 export default function DetailsAnnouncement({style}) {
@@ -46,8 +48,6 @@ export default function DetailsAnnouncement({style}) {
         refresh()
     }, [])
 
-    let contents;
-
     if(error !== null) {
         return <TextC>⚠️ {error.toString()}</TextC>
     }
@@ -58,33 +58,7 @@ export default function DetailsAnnouncement({style}) {
 
     const openingTime = new Date(data["opening_time"])
     const autostartTime = new Date(data["autostart_time"])
-
-    let opening;
-    if(data["state"] <= -1) {
-        opening = (
-            <TextC>Apertura: <TextC>{openingTime.toString()}</TextC></TextC>
-        )
-    }
-    else {
-        opening = null
-    }
-
-    let autostart;
-    if(data["state"] <= 0) {
-        autostart = (
-            <TextC>Inizio: <TextC>{autostartTime.toString()}</TextC></TextC>
-        )
-    }
-    else if(data["state"] === 1) {
-        autostart = (
-            <TextC>Iniziato</TextC>
-        )
-    }
-    else if(data["state"] === 2) {
-        autostart = (
-            <TextC>Annullato</TextC>
-        )
-    }
+    const partecipantCount = data["responses"].filter(r => (r["choice"] === "accepted")).length
 
     return (
         <ContextColor.Provider value={colors[data["state"]]}>
@@ -104,9 +78,43 @@ export default function DetailsAnnouncement({style}) {
                         <TextC style={styles.title}>
                             {data["title"]}
                         </TextC>
-                        {opening}
-                        {autostart}
+                        <View style={styles.moment}>
+                            <View style={styles.date}>
+                                <TextC style={styles.smol}>
+                                    {dayStrings[autostartTime.getDay()]}
+                                </TextC>
+                                <TextC style={styles.larg}>
+                                    {renderDate(autostartTime)}
+                                </TextC>
+                            </View>
+                            <View style={styles.time}>
+                                <TextC style={styles.smol}>
+                                    alle
+                                </TextC>
+                                <TextC style={styles.larg}>
+                                    {renderTime(autostartTime)}
+                                </TextC>
+                            </View>
+                        </View>
+                        {data["description"] ?
+                            <TextC style={styles.description}>
+                                {data["description"]}
+                            </TextC>
+                        : null}
                     </View>
+                    {partecipantCount > 0 ?
+                        <View style={styles.partecipants}>
+                            <TextC style={styles.partecipantsHeader}>
+                                Partecipanti
+                            </TextC>
+                            <FlatList
+                                data={data["responses"]}
+                                renderItem={
+                                    ({item}) => <Response data={item} key={item["rid"]}/>
+                                }
+                            />
+                        </View>
+                    : null}
                 </Box>
             </ScrollView>
         </ContextColor.Provider>
@@ -115,13 +123,41 @@ export default function DetailsAnnouncement({style}) {
 
 const styles = StyleSheet.create({
     box: {},
-    view: {
-        flexDirection: "column",
-    },
-    time: {},
+    view: {},
     title: {
         fontWeight: "bold",
+        fontSize: 32,
+        marginLeft: "auto",
+        marginRight: "auto",
+        textAlign: "center",
+    },
+    moment: {
+        flexDirection: "row",
+        marginTop: 16,
+    },
+    smol: {
+        textAlign: "center",
+    },
+    larg: {
         fontSize: 24,
+        fontFamily: "monospace",
+    },
+    date: {
+        marginLeft: "auto",
+        marginRight: 16,
+    },
+    time: {
+        marginLeft: 16,
         marginRight: "auto",
     },
+    description: {
+        textAlign: "justify",
+        marginTop: 16,
+    },
+    partecipantsHeader: {
+        fontSize: 20,
+        marginTop: 12,
+        marginBottom: 12,
+        textAlign: "center",
+    }
 })

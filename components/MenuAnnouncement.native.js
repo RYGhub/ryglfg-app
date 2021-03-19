@@ -3,7 +3,7 @@ import {StyleSheet, View, TouchableOpacity} from 'react-native'
 import Box from "./Box"
 import TextC from "./TextC"
 import ContextColor from "../contexts/ContextColor"
-import renderDate from "../utils/renderDate"
+import renderAutoDatetime from "../utils/renderAutoDatetime"
 import ContextDetails from "../contexts/ContextDetails"
 import {colors} from "../utils/stateInfo"
 
@@ -20,7 +20,7 @@ export default function MenuAnnouncement({style, data}) {
                 <Box style={[styles.box, style]}>
                     <View style={styles.view}>
                         <TextC style={styles.time}>
-                            {renderDate(autostartTime)}
+                            {renderAutoDatetime(autostartTime)}
                         </TextC>
                         <TextC style={styles.title}>
                             {data["title"]}

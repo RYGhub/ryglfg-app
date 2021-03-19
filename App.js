@@ -28,7 +28,7 @@ export default function App() {
     if(!authData) {
         contents = (
             <Fragment>
-                <Text style={styles.title}>
+                <Text style={styles.login}>
                     Login richiesto
                 </Text>
                 <AuthButton/>
@@ -38,7 +38,7 @@ export default function App() {
     else if(details === null) {
         contents = (
             <Fragment>
-                <Text style={styles.logged_in}>
+                <Text style={styles.login}>
                     <Sub id={authData["payload"]["sub"]}/>
                 </Text>
                 <AnnouncementList/>
@@ -48,7 +48,7 @@ export default function App() {
     else {
         contents = (
             <Fragment>
-                <Text style={styles.logged_in}>
+                <Text style={styles.login}>
                     <Sub id={authData["payload"]["sub"]}/>
                 </Text>
                 <DetailsAnnouncement data={details}/>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginBottom: 8,
     },
-    logged_in: {
+    login: {
         color: "#fff",
         textAlign: "center",
         marginBottom: 8,
